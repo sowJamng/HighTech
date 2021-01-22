@@ -1,0 +1,299 @@
+@startuml
+package rest.tech{
+package rest.tech.model{
+package rest.tech.model.api{
+ class Personne {
+	- id:Integer
+	-  nom:String
+	-  prenom:String
+	- email:String
+	- adress:String
+	- password:String
+	+ this()
+	+@Getters()
+	+@Setters()
+	/'+ getId():Integer
+	+ setId(Integer id):void
+	+ getNom():String
+	+  setNom( nom:String):void
+	+ getPrenom():String
+	+ setPrenom(prenom:String )
+	+getEmail() :String
+	+  setEmail(email:String ) :void
+	+ getAdress() :String
+	+ setAdress(adress:String ) :void
+	+getPassword():String
+	+  setPassword( password:String):void'/
+	+equals(o:Object ):boolean
+	+toString():String
+}
+
+}
+
+package rest.tech.model.impl{
+class Administrateur extends Personne{
+- articles:Set<Article>
+# istance:Adminidtrateur {static}
+-this()
++getArticles():Set<Article>
++getInstance():Adminidtrateur {static}
+
+}
+
+class Article {
+#  instance:Article {static}
+- id:Integer
+-  libelle:String
+-  String marque;
+-  prix: Integer
+-  categorie:Categorie
+-  boutique :Boutique
+- this()
++getInstance():Article
++@Getters()
+ +@Setters()
+ +equals(o:Object ):boolean
+ 	+toString():String
+ 	+ hashCode():int
+}
+class Boutique {
+	# instance: Boutique  {static}
+	-  d:Integer
+	- description :String
+	-  contact:String
+	- articles:Set<Article>
+	-this()
+	@Getters()
+	@Setters()
+	getInstance:Boutique {static}
+	+equals(o:Object ):boolean
+    +toString():String
+	+ hashCode():int
+}
+class Categorie {
+
+	#  instance :Categorie {static}
+	-  id:Integer
+	-  nom:String
+	- articles:Set<Article>
+	- this()
+	+ getInstance():Categorie {static}
+	+@Getters()
+	+ @Setter()
+	+ equals():boolean
+	+ hashCode():int
+	+ toString:String
+
+	}
+}
+}
+package rest.tech.dao{
+package rest.tech.dao.api{
+interface IAdministrateurDao {
+	 +addAdmin( key:Integer,admin:Administrateur  ):void
+     +updateAddmin( admin:Administrateur):Administrateur
+     +deleteAdmin(id:Integer ):void
+     +getAdmin(Integer id):Administrateur
+}
+interface IArticleDao{
+
+    + addArticle( key:Integer,article:Article  ):void
+     +updateArticle( article:Article):Article
+     +deleteArticle(id:Integer ):void
+     +getArticle( id:Integer):Article
+     +getAllArticles():List<Article>
+}
+interface IBoutiqueDao{
+     +addBoutique( key:Integer,admin:Boutique  ):void
+     +updateBoutique( boutique:Boutique):Article
+     +deleteBoutique(id:Integer ):void
+     +getBoutique( id:Integer):Boutique
+     +getAllBoutiques():List<Boutique>
+}
+interface ICategorieDao{
+ addCategorie( key:Integer,categorie:Categorie  ):void
+     updateCategorie( categorie:Categorie):Categorie
+     deleteCategorie(id:Integer ):void
+     getCategorie( id:Integer):Categorie
+     getAllCategories():List<Categorie>
+}
+
+}
+package rest.tech.dao.impl{
+class AdministrateurDao implements IAdministrateurDao{
+# instance :AdministrateurDao {static }
+admins:Map<Integer,Administrateur>
+ +getInstance() :AdministrateurDao {static }
+-this()
+    getAdmins():Map<Integer,Administrateur>
+     addAdmin( key:Integer,admin:Administrateur  ):void
+     updateAddmin( admin:Administrateur):Administrateur
+     deleteAdmin(id:Integer ):void
+     getAdmin(Integer id):Administrateur
+
+}
+class ArticleDao implements IArticleDao{
+# instance:ArticleDao {static}
++ articles:Map<Integer,Article>
++getInstance():ArticleDao {static}
+getArticles():Map<Integer,Article>
+-this()
+     addArticle( key:Integer,admin:Article  ):void
+     updateArticle( admin:Article):Article
+     deleteArticle(id:Integer ):void
+     getArticle( id:Integer):Article
+     getAllArticles():List<Article>
+}
+class BoutiqueDao implements IBoutiqueDao{
+#instance :BoutiqueDao {static}
++boutiques Map<Integer,Boutique>
+getBoutiques():Map<Integer,Boutique>
+-this()
++ getInstance():BoutiqueDao {static}
+    + addBoutique( key:Integer,admin:Boutique  ):void
+    + updateBoutique( boutique:Boutique):Boutique
+    + deleteBoutique(id:Integer ):void
+    + getBoutique( id:Integer):Boutique
+    + getAllBoutique():List<Boutique>
+}
+class CategorieDao implements ICategorieDao{
+#instance :Categorie {static}
+-categories:Map<Integer,Categorie>
++getCategories():Map<Integer,Categorie>
+-this()
++ getInstance():Categorie {static}
+     +addCategorie( key:Integer,categorie:Categorie  ):void
+     +updateCategorie( categorie:Categorie):Categorie
+     +deleteCategorie(id:Integer ):void
+     +getCategorie( id:Integer):Categorie
+     +getAllCategories():List<Categorie>
+}
+}
+}
+package rest.tech.resource{
+
+package rest.tech.resource.api{
+
+interface IAdministrateurResource {
+
+	+getAdministrateur(id:Integer):Administrateur
+	+getAdministrateurHtm(id:Integer):Administrateur
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( admin:Administrateur)
+	+Response putAdmin( admin:JAXBElement<Administrateur>)
+	+ add( admin:Administrateur):void
+
+}
+
+interface IArticleResource {
+
+  +getArticle(id:Integer ):Article
+	+getArticleHtm(id:Integer):Article
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( article:Article)
+	+Response putAdmin( article:JAXBElement<Article>)
+	+void add( article:Article)
+	+getArticles():List<Article>
+}
+interface ICategorieResource{
+
+    +getCategorie(Integer id):Categorie
+	+getCategorieHtm(Integer id):Categorie
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( categorie:Categorie)
+	+Response putCategorie( categorie:JAXBElement<Categorie>)
+	+void add( categorie:Categorie)
+	+getCategories():List<Categorie>
+}
+interface IBoutiqueResource{
+    +getBoutique( id:Integer):Boutique
+	+getBoutiqueHtm(id:Boutique):Boutique
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( boutique:Boutique)
+	+Response putBoutique( boutique:JAXBElement<Boutique>)
+	+void add( boutique:Boutique)
+	+getBoutiques():List<Boutique>
+}
+rest.tech.resource o..>javax.ws.rs
+rest.tech.resource o..>javax.xml.bind
+}
+package rest.tech.resource.impl{
+class AdministrateurResource implements IAdministrateurResource{
+#adminDao:AdministrateurDao
+#instance:AdministrateurResource {static}
+-uriInfo:UriInfo
+ -request:Request
+ +setUrlInfo(urlInfo:UrlInfo)
+ +setRequest(request:Request)
+-this()
++getInstance():AdministrateurResource {static}
+getAdministrateur(id:Integer):Administrateur
+	+getAdministrateurHtm(id:Integer):Administrateur
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( admin:Administrateur)
+	+Response putAdmin( admin:JAXBElement<Administrateur>)
+	+void add( admin:Administrateur)
+}
+class ArticleResource implements IArticleResource{
+# articleDao:ArticleDao
+#instance:ArticleResource {static}
+-uriInfo:UriInfo
+ -request:Request
+ +setUrlInfo(urlInfo:UrlInfo)
+ +setRequest(request:Request)
+-this()
++getArticle(id:Integer):Article
+	+getArticleHtm(id:Integer):Article
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( article:Article)
+	+Response putAdmin( admin:JAXBElement<Article>)
+	+void add( article:Article)
+	+getArticles():List<Article>
+}
+class CategorieResource implements ICategorieResource{
+#cateforieDao:CategorieDao
+#instance():CategorieResource {static}
+-uriInfo:UriInfo
+ -request:Request
+ +setUrlInfo(urlInfo:UrlInfo)
+ +setRequest(request:Request)
++getInstance():CategorieResource {static}
+-this()
+   +getCategorie(id:Integer):Categorie
+	+getCategorieHtm(id:Integer):Categorie
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( categorie:Categorie)
+	+Response putCategorie( categorie:JAXBElement<Categorie>)
+	+void add( categorie:Categorie)
+	+getCategories():List<Categorie>
+}
+class BoutiqueResource implements IBoutiqueResource{
+#boutiqueDao:BoutiqueDao
+#instance:BoutiqueResource {static}
+ -uriInfo:UriInfo
+ -request:Request
+ +setUrlInfo(urlInfo:UrlInfo)
+ +setRequest(request:Request)
++getInstance():BoutiqueResource {static}
+    +getBoutique(id:Integer):Boutique
+	+getBoutiqueHtm(id:Integer):Boutique
+	+delete(id:Integer ):void
+	+Response putAndGetResponse( boutique:Boutique)
+	+Response putBoutique( boutique:JAXBElement<Boutique>)
+	+void add( boutique:Boutique)
+	+getBoutiques():List<Boutique>
+}
+BoutiqueResource o..>BoutiqueDao
+CategorieResource o..>CategorieDao
+ArticleResource o..>ArticleDao
+AdministrateurResource o..>AdministrateurDao
+
+Categorie o--|>Article
+Boutique o--|>Article
+Administrateur o--|>Article
+
+}
+}
+}
+
+@enduml
