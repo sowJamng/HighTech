@@ -1,8 +1,25 @@
 @startuml
 package rest.tech{
+/'package configure.hibernate.session{
+class HibernateUtil {
+
+	- sessionFactory:SessionFactory {static}
+   +configureSessionFactory:SessionFactory {static}
+    +getSessionFactory() :SessionFactory {static}
+ +this()
+	+main(arg[]:String ){ static }void
+
+}
+class SessionFactoryProvider <<final >>{
+-  sessionFactory :SessionFactory <<final >>{static}
+
+ +getSessionFactory() :{static}SessionFactory
+ -this()
+}
+
+}'/
 package rest.tech.model{
-package rest.tech.model.api{
- class Personne {
+class Administrateur {
 	- id:Integer
 	-  nom:String
 	-  prenom:String
@@ -12,26 +29,10 @@ package rest.tech.model.api{
 	+ this()
 	+@Getters()
 	+@Setters()
-	/'+ getId():Integer
-	+ setId(Integer id):void
-	+ getNom():String
-	+  setNom( nom:String):void
-	+ getPrenom():String
-	+ setPrenom(prenom:String )
-	+getEmail() :String
-	+  setEmail(email:String ) :void
-	+ getAdress() :String
-	+ setAdress(adress:String ) :void
-	+getPassword():String
-	+  setPassword( password:String):void'/
+	+ seconnecter:
 	+equals(o:Object ):boolean
 	+toString():String
-}
 
-}
-
-package rest.tech.model.impl{
-class Administrateur extends Personne{
 - articles:Set<Article>
 # istance:Adminidtrateur {static}
 -this()
@@ -46,6 +47,8 @@ class Article {
 -  libelle:String
 -  String marque;
 -  prix: Integer
+- photo:String
+- marque :String
 -  categorie:Categorie
 -  boutique :Boutique
 - this()
@@ -70,21 +73,9 @@ class Boutique {
     +toString():String
 	+ hashCode():int
 }
-class Categorie {
-
-	#  instance :Categorie {static}
-	-  id:Integer
-	-  nom:String
-	- articles:Set<Article>
-	- this()
-	+ getInstance():Categorie {static}
-	+@Getters()
-	+ @Setter()
-	+ equals():boolean
-	+ hashCode():int
-	+ toString:String
-
-	}
+enum Categorie {
+PC_Portable , PC_de_Bureau , Accessoires_ordinateurs,Smart_phone ,Tel_Fixe ,
+Accessoires_teléphone ,Disque_dur ,Clé_USB ,Accessoires_stockage
 }
 }
 package rest.tech.dao{
@@ -109,13 +100,6 @@ interface IBoutiqueDao{
      +deleteBoutique(id:Integer ):void
      +getBoutique( id:Integer):Boutique
      +getAllBoutiques():List<Boutique>
-}
-interface ICategorieDao{
- addCategorie( key:Integer,categorie:Categorie  ):void
-     updateCategorie( categorie:Categorie):Categorie
-     deleteCategorie(id:Integer ):void
-     getCategorie( id:Integer):Categorie
-     getAllCategories():List<Categorie>
 }
 
 }
@@ -156,18 +140,6 @@ getBoutiques():Map<Integer,Boutique>
     + getBoutique( id:Integer):Boutique
     + getAllBoutique():List<Boutique>
 }
-class CategorieDao implements ICategorieDao{
-#instance :Categorie {static}
--categories:Map<Integer,Categorie>
-+getCategories():Map<Integer,Categorie>
--this()
-+ getInstance():Categorie {static}
-     +addCategorie( key:Integer,categorie:Categorie  ):void
-     +updateCategorie( categorie:Categorie):Categorie
-     +deleteCategorie(id:Integer ):void
-     +getCategorie( id:Integer):Categorie
-     +getAllCategories():List<Categorie>
-}
 }
 }
 package rest.tech.resource{
@@ -182,6 +154,7 @@ interface IAdministrateurResource {
 	+Response putAndGetResponse( admin:Administrateur)
 	+Response putAdmin( admin:JAXBElement<Administrateur>)
 	+ add( admin:Administrateur):void
+	connexion(String login,String pass): Administrateur
 
 }
 
@@ -195,16 +168,6 @@ interface IArticleResource {
 	+void add( article:Article)
 	+getArticles():List<Article>
 }
-interface ICategorieResource{
-
-    +getCategorie(Integer id):Categorie
-	+getCategorieHtm(Integer id):Categorie
-	+delete(id:Integer ):void
-	+Response putAndGetResponse( categorie:Categorie)
-	+Response putCategorie( categorie:JAXBElement<Categorie>)
-	+void add( categorie:Categorie)
-	+getCategories():List<Categorie>
-}
 interface IBoutiqueResource{
     +getBoutique( id:Integer):Boutique
 	+getBoutiqueHtm(id:Boutique):Boutique
@@ -216,6 +179,7 @@ interface IBoutiqueResource{
 }
 rest.tech.resource o..>javax.ws.rs
 rest.tech.resource o..>javax.xml.bind
+rest.tech.model o..> org.hibernate
 }
 package rest.tech.resource.impl{
 class AdministrateurResource implements IAdministrateurResource{
@@ -226,6 +190,7 @@ class AdministrateurResource implements IAdministrateurResource{
  +setUrlInfo(urlInfo:UrlInfo)
  +setRequest(request:Request)
 -this()
+connexion(String login,String pass): Administrateur
 +getInstance():AdministrateurResource {static}
 getAdministrateur(id:Integer):Administrateur
 	+getAdministrateurHtm(id:Integer):Administrateur
@@ -250,23 +215,6 @@ class ArticleResource implements IArticleResource{
 	+void add( article:Article)
 	+getArticles():List<Article>
 }
-class CategorieResource implements ICategorieResource{
-#cateforieDao:CategorieDao
-#instance():CategorieResource {static}
--uriInfo:UriInfo
- -request:Request
- +setUrlInfo(urlInfo:UrlInfo)
- +setRequest(request:Request)
-+getInstance():CategorieResource {static}
--this()
-   +getCategorie(id:Integer):Categorie
-	+getCategorieHtm(id:Integer):Categorie
-	+delete(id:Integer ):void
-	+Response putAndGetResponse( categorie:Categorie)
-	+Response putCategorie( categorie:JAXBElement<Categorie>)
-	+void add( categorie:Categorie)
-	+getCategories():List<Categorie>
-}
 class BoutiqueResource implements IBoutiqueResource{
 #boutiqueDao:BoutiqueDao
 #instance:BoutiqueResource {static}
@@ -284,11 +232,10 @@ class BoutiqueResource implements IBoutiqueResource{
 	+getBoutiques():List<Boutique>
 }
 BoutiqueResource o..>BoutiqueDao
-CategorieResource o..>CategorieDao
 ArticleResource o..>ArticleDao
 AdministrateurResource o..>AdministrateurDao
 
-Categorie o--|>Article
+Categorie o..>Article
 Boutique o--|>Article
 Administrateur o--|>Article
 

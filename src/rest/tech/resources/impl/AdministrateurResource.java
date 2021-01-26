@@ -17,7 +17,7 @@ import rest.tech.dao.impl.AdministrateurDao;
 import rest.tech.model.impl.Administrateur;
 import rest.tech.resources.api.IAdministrateurResource;
 
-@Path("/admins")
+
 public class AdministrateurResource implements IAdministrateurResource{
 	    protected  AdministrateurDao adminDao;
 	    @Context

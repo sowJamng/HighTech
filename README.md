@@ -1,2 +1,2 @@
 # HighTech
-boutique High tech en ligne
+#boutique High tech en ligne

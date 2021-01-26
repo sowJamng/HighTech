@@ -8,15 +8,20 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBElement;
+
 import rest.tech.dao.impl.AdministrateurDao;
 import rest.tech.model.impl.Administrateur;
+
 
 
 @Path("/admins")
@@ -47,6 +52,12 @@ public class AdminsResource {
 		        List<Administrateur> admins = new ArrayList<Administrateur>();
 		        admins.addAll(AdministrateurDao.getInstance().getAdmins().values());
 		        return admins;
+		    }
+		  @PUT
+		    @Consumes(MediaType.APPLICATION_XML)
+		    public Response putTodo(JAXBElement<Administrateur> admin) {
+			  Administrateur a =admin.getValue();
+		        return putAndGetResponse(a);
 		    }
 
 		    // Return the list of todos for applications
@@ -88,4 +99,14 @@ public class AdminsResource {
 	      AdministrateurDao.getInstance().addAdmin(admin.getId(), admin);
 	      servletResponse.sendRedirect("../index.html");
 	    }
+	     private Response putAndGetResponse(Administrateur admin) {
+	         Response res;
+	         if(AdministrateurDao.getInstance().getAdmins().containsKey(admin.getId())) {
+	             res = Response.noContent().build();
+	         } else {
+	             res = Response.created(uriInfo.getAbsolutePath()).build();
+	         }
+	         AdministrateurDao.getInstance().getAdmins().put(admin.getId(), admin);
+	         return res;
+	     }
 }
