@@ -71,7 +71,7 @@ public class AdminsResource {
 		    }
 		    
 		  @Path("{admin}")
-		    public AdministrateurResource getTodo(@PathParam("admin") Integer id) {
+		    public AdministrateurResource getTodo(@PathParam("admin") String id) {
 		        AdministrateurResource adresource= AdministrateurResource.getInstance();
 		        adresource.setRequest(request);
 		        adresource.setUriInfo(uriInfo);
@@ -82,7 +82,7 @@ public class AdminsResource {
 	     @POST
 	     @Produces(MediaType.TEXT_HTML)
 	     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	    public void newAdmin(@FormParam("id") Integer id,
+	    public void newAdmin(@FormParam("id") String id,
 	            @FormParam("nom") String nom,
 	            @FormParam("nom") String prenom,
 	            @FormParam("adress") String adress,

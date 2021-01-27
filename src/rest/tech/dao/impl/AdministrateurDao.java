@@ -7,13 +7,14 @@ import rest.tech.model.impl.Administrateur;
 
 public class AdministrateurDao implements IAdministrateurDao {
     protected static AdministrateurDao instance;
-	protected Map<Integer,Administrateur> admins;
+	protected Map<String,Administrateur> admins;
 	
 private AdministrateurDao() {
 	Administrateur a=Administrateur.getInstance();
-	a.setId(1); a.setPrenom("Maodo"); a.setNom("nom"); a.setEmail("maodo@gmail.com"); a.setPassword("1234");
+	a.setId("1");
+	a.setPrenom("Maodo"); a.setNom("nom"); a.setEmail("maodo@gmail.com"); a.setPassword("1234");
 	a.setAdress("92000 Nanterre");
-	admins.put(1,a);
+	admins.put("1",a);
 }
 
 	public static  AdministrateurDao getInstance() {
@@ -22,17 +23,17 @@ private AdministrateurDao() {
 		return instance;
 	}
 	@Override
-	public Administrateur getAdmin(Integer id) {
+	public Administrateur getAdmin(String id) {
 		return admins.get(id);
 	}
 	@Override
-	public void addAdmin(Integer key, Administrateur admin) {
+	public void addAdmin(String key, Administrateur admin) {
 		this.admins.put(key, admin);
 		
 	}
 
 	@Override
-	public void deleteAdmin(Integer id) {
+	public void deleteAdmin(String id) {
 		if(admins.containsKey(id))
 			this.admins.remove(id);
 		else
@@ -43,7 +44,7 @@ private AdministrateurDao() {
 	@Override
 	public Administrateur updateAddmin(Administrateur admin) {
 		Administrateur ad =Administrateur.getInstance();
-		if(admins.containsKey(admin.getId())) {
+		if(admins.containsKey((admin.getId()))) {
 		   ad.setNom(admin.getNom());
 		   ad.setPrenom(admin.getPrenom());
 		   ad.setEmail(admin.getEmail());
@@ -58,7 +59,7 @@ private AdministrateurDao() {
 			}
 		
 	}
-	public Map<Integer,Administrateur> getAdmins(){
+	public Map<String,Administrateur> getAdmins(){
 		return this.admins;
 	}
 

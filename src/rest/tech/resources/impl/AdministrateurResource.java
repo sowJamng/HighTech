@@ -15,18 +15,18 @@ import javax.xml.bind.JAXBElement;
 import javax.ws.rs.core.Response;
 import rest.tech.dao.impl.AdministrateurDao;
 import rest.tech.model.impl.Administrateur;
-import rest.tech.resources.api.IAdministrateurResource;
+
 
 
 public class AdministrateurResource implements IAdministrateurResource{
-	    protected  AdministrateurDao adminDao;
+	    protected  AdministrateurDao adminDao=AdministrateurDao.getInstance();
 	    @Context
 	    UriInfo uriInfo;
 	    @Context
 	    Request request;
 	   
 	    protected static  AdministrateurResource instance;
-		private AdministrateurResource() {adminDao.getInstance();}
+		private AdministrateurResource() {}
 		
 	  public void setUriInfo(UriInfo url){
 		  this.uriInfo=url;
@@ -46,7 +46,7 @@ public class AdministrateurResource implements IAdministrateurResource{
 	@Override
 	@GET
 	 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-	public Administrateur getAdministrateur(Integer id) {
+	public Administrateur getAdministrateur(String id) {
 		 Administrateur admin = adminDao.getAdmins().get(id);
 	        if(admin==null)
 	            throw new RuntimeException("Get: Todo with " + id +  " not found");
@@ -56,7 +56,7 @@ public class AdministrateurResource implements IAdministrateurResource{
 	@Override
 	@GET
     @Produces(MediaType.TEXT_XML)
-	public Administrateur getAdministrateurHtm(Integer id) {
+	public Administrateur getAdministrateurHtm(String id) {
 		 Administrateur admin = adminDao.getAdmins().get(id);
 	        if(admin==null)
 	            throw new RuntimeException("Get: Todo with " + id +  " not found");
@@ -84,7 +84,7 @@ public class AdministrateurResource implements IAdministrateurResource{
 
 	@Override
 	@DELETE
-	public void deleteAdministrateur(Integer id) {
+	public void deleteAdministrateur(String id) {
 		adminDao.deleteAdmin(id);
 		
 	}
